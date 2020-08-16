@@ -1,6 +1,7 @@
 package rabbit
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -33,7 +34,7 @@ func (con *Connector) Initiation() error {
 		},
 	}
 	// Initiation Rabbit Connection
-	conn, err := amqp.DialConfig(con.Addr, amqp.Config{
+	conn, err := amqp.DialConfig(fmt.Sprintf("ampq://%s", con.Addr), amqp.Config{
 		SASL: []amqp.Authentication{
 			&amqp.PlainAuth{
 				Username: con.Username,
