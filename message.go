@@ -6,7 +6,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-func (con *Connector) PublishMessage(exchange, key string, message []byte, priority uint8, close bool) error {
+func (con *Connector) Publish(exchange, key string, message []byte, priority uint8, close bool) error {
 	if close {
 		defer con.connection.Close()
 		defer con.channel.Close()
@@ -23,7 +23,7 @@ func (con *Connector) PublishMessage(exchange, key string, message []byte, prior
 
 func (con *Connector) PublishString(exchange, key, message string, priority uint8, close bool) error {
 	// Success
-	return con.PublishMessage(exchange, key, []byte(message), priority, close)
+	return con.Publish(exchange, key, []byte(message), priority, close)
 }
 
 func (con *Connector) PublishObject(exchange, key string, object interface{}, priority uint8, close bool) error {
@@ -32,5 +32,21 @@ func (con *Connector) PublishObject(exchange, key string, object interface{}, pr
 		return err
 	}
 	// Success
-	return con.PublishMessage(exchange, key, message, priority, close)
+	return con.Publish(exchange, key, message, priority, close)
+}
+
+func (con *Connector) Consume(queue string, prefectCount int, autoAck bool) (<-chan amqp.Delivery, error) {
+	// Success
+	if prefectCount != 0 {
+		err := con.channel.Qos(prefectCount, 0, false)
+		if err != nil {
+			return nil, err
+		}
+	}
+	messages, err := con.channel.Consume(queue, "", autoAck, false, false, false, nil)
+	if err != nil {
+		return nil, err
+	}
+	// Success
+	return messages, err
 }
