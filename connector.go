@@ -17,13 +17,13 @@ type (
 		Password   string
 		connection *amqp.Connection
 		channel    *amqp.Channel
-		logger     *logrus.Logger
+		Logger     *logrus.Logger
 	}
 )
 
 func (con *Connector) Initiation() error {
 	// Initiation logger
-	con.logger = &logrus.Logger{
+	con.Logger = &logrus.Logger{
 		Out:   os.Stderr,
 		Level: logrus.DebugLevel,
 		Formatter: &prefixed.TextFormatter{
@@ -43,7 +43,7 @@ func (con *Connector) Initiation() error {
 		},
 		Heartbeat: time.Second * 30,
 	})
-	con.logger.Infof("Initializing connection to RabbitMQ [%s] - User (%s)", con.Addr, con.Username)
+	con.Logger.Infof("Initializing connection to RabbitMQ [%s] - User (%s)", con.Addr, con.Username)
 	if err != nil {
 		return err
 	}
