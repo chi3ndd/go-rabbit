@@ -52,3 +52,14 @@ func (con *Connector) Initiation() error {
 	// Success
 	return err
 }
+
+func (con *Connector) Close() error {
+	err := con.connection.Close()
+	if err != nil {
+		return err
+	}
+	err = con.channel.Close()
+	if err != nil {
+		return err
+	}
+}
