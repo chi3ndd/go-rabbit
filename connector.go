@@ -62,4 +62,5 @@ func (con *Connector) Close() error {
 	if err != nil {
 		return err
 	}
+	return nil
 }
